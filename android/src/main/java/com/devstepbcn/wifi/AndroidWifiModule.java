@@ -121,7 +121,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		List<WifiConfiguration> networks = wifi.getConfiguredNetworks();
 		for (WifiConfiguration network : networks) {
 			if (ssid.equals(network.SSID)) {
-				connect = wifi.enableNetwork(network.networkId);
+				connect = wifi.enableNetwork(network.networkId, false);
 			}
 		}
 		success.invoke(connect);
