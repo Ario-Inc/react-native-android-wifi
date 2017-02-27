@@ -80,6 +80,12 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		}
 	}
 
+	//Method to refresh wifi scan
+	@ReactMethod
+	public void doWifiScan() {
+		wifi.startScan();
+	}
+
 	//Method to check if wifi is enabled
 	@ReactMethod
 	public void isEnabled(Callback isEnabled) {
