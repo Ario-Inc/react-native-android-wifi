@@ -115,6 +115,18 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		ssidFound.invoke(connected);
 	}
 
+	@ReactMethod
+	public void reconnect(String ssid, Callback success) { 
+		boolean connect = false;
+		List<WifiConfiguration> networks = wifi.getConfiguredNetworks();
+		for (WifiConfiguration network : networks) {
+			if (ssid.equals(network.SSID)) {
+				connect = wifi.enableNetwork(network.networkId);
+			}
+		}
+		success.invoke(connect);
+	}
+
 	//Use this method to check if the device is currently connected to Wifi.
 	@ReactMethod
 	public void connectionStatus(Callback connectionStatusResult) {
