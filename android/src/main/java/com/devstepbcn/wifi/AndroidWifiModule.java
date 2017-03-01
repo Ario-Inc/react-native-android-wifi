@@ -21,6 +21,8 @@ import android.net.wifi.WifiInfo;
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
+import android.util.Log;
+
 import java.util.List;
 import java.lang.Thread;
 
@@ -104,6 +106,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	//Callback returns true if ssid is in the range
 	@ReactMethod
 	public void findAndConnect(String ssid, String password, Callback ssidFound) {
+		Log.v("WDD", "SSID - " + ssid);
 		List < ScanResult > results = wifi.getScanResults();
 		boolean connected = false;
 		for (ScanResult result: results) {
@@ -142,6 +145,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	//Method to connect to WIFI Network
 	public Boolean connectTo(ScanResult result, String password, String ssid) {
 		//Make new configuration
+		Log.v("WDD", "SSID - " + ssid);
 		WifiConfiguration conf = new WifiConfiguration();
 		conf.SSID = "\"" + ssid + "\"";
 		String Capabilities = result.capabilities;
