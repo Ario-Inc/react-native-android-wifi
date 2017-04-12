@@ -106,7 +106,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	//Callback returns true if ssid is in the range
 	@ReactMethod
 	public void findAndConnect(String ssid, String password, Callback ssidFound) {
-		Log.v("WDD", "SSID - " + ssid);
+		// Log.v("WDD", "SSID - " + ssid);
 		List < ScanResult > results = wifi.getScanResults();
 		boolean connected = false;
 		for (ScanResult result: results) {
@@ -119,7 +119,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	}
 
 	@ReactMethod
-	public void reconnect(String ssid, Callback success) { 
+	public void reconnect(String ssid, Callback success) {
 		boolean connect = false;
 		List<WifiConfiguration> networks = wifi.getConfiguredNetworks();
 		for (WifiConfiguration network : networks) {
@@ -145,7 +145,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	//Method to connect to WIFI Network
 	public Boolean connectTo(ScanResult result, String password, String ssid) {
 		//Make new configuration
-		Log.v("WDD", "SSID - " + ssid);
+		// Log.v("WDD", "SSID - " + ssid);
 		WifiConfiguration conf = new WifiConfiguration();
 		conf.SSID = "\"" + ssid + "\"";
 		String Capabilities = result.capabilities;
@@ -172,22 +172,26 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 			}
 		}
 
-                // If network not already in configured networks add new network
+    // If network not already in configured networks add new network
 		if ( updateNetwork == -1 ) {
-                        updateNetwork = wifi.addNetwork(conf);
+    	updateNetwork = wifi.addNetwork(conf);
 		};
 
-                if ( updateNetwork == -1 ) {
-                  return false;
-                }
+    if ( updateNetwork == -1 ) {
+			Log.v("WDD", "FAILING OUT - COULD NOT ADD NETWORK");
+			return false;
+    }
 
-                boolean disconnect = wifi.disconnect();
+    boolean disconnect = wifi.disconnect();
+
 		if ( !disconnect ) {
+			Log.v("WDD", "FAILING OUT - COULD NOT DISCONNECT");
 			return false;
 		};
 
 		boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
 		if ( !enableNetwork ) {
+			Log.v("WDD", "FAILING OUT - COULD NOT ENABLE NETWORK");
 			return false;
 		};
 
@@ -255,4 +259,3 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		return sb.toString();
 	}
 }
-
