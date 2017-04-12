@@ -167,7 +167,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		int updateNetwork = -1;
 		for(WifiConfiguration wifiConfig : mWifiConfigList){
 			if(wifiConfig.SSID.equals(comparableSSID)){
-				Log.v("WDD", wifiConfig.SSID + " = " + comparableSSID)
+				Log.v("WDD", wifiConfig.SSID + " = " + comparableSSID);
 				conf.networkId = wifiConfig.networkId;
 				updateNetwork = wifi.updateNetwork(conf);
 			}
