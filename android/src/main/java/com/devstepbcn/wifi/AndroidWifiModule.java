@@ -147,6 +147,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		//Make new configuration
 		// Log.v("WDD", "SSID - " + ssid);
 		WifiConfiguration conf = new WifiConfiguration();
+		conf.priority = 999999;
 		conf.SSID = "\"" + ssid + "\"";
 		String Capabilities = result.capabilities;
 		if (Capabilities.contains("WPA2")) {
@@ -163,13 +164,14 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		}
 		//Remove the existing configuration for this netwrok
 		List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
-		String comparableSSID = ('"' + ssid + '"'); //Add quotes because wifiConfig.SSID has them
+		//String comparableSSID = ('"' + ssid + '"'); //Add quotes because wifiConfig.SSID has them
 		int updateNetwork = -1;
 		for(WifiConfiguration wifiConfig : mWifiConfigList){
-			Log.v("WDD", wifiConfig.SSID + " = " + comparableSSID);
-			if(wifiConfig.SSID.equals(comparableSSID)){
-				conf.networkId = wifiConfig.networkId;
-				updateNetwork = wifi.updateNetwork(conf);
+
+			if(wifiConfig.SSID.equals(conf.SSID)){
+				wifi.removeNetwork(conf.networkId);
+				//conf.networkId = wifiConfig.networkId;
+				//updateNetwork = wifi.updateNetwork(conf);
 			}
 		}
 
@@ -259,4 +261,67 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		sb.append(strip[3]);
 		return sb.toString();
 	}
+	// @TargetApi(VERSION_CODES.MARSHMELLOW)
+	@ReactMethod
+	private void bindAppToSoftAp(String ssid) {
+			Log.v("WDD", "Trying to bind to: " + ssid);
+			Network softAp = null;
+			for (Network network : connMan.getAllNetworks()) {
+					Log.v("WDD","Inspecting network:  " + network);
+					NetworkInfo networkInfo = connMan.getNetworkInfo(network);
+					Log.v("WDD","Inspecting network info:  " + networkInfo);
+					String dequotifiedNetworkExtraSsid = deQuotifySsid(networkInfo.getExtraInfo());
+					String dequotifiedTargetSsid = deQuotifySsid(ssid);
+					Log.v("WDD","Network extra info: '" + dequotifiedNetworkExtraSsid + "'");
+					Log.v("WDD","And the SSID we were to connect to: '" + dequotifiedTargetSsid + "'");
+					if (dequotifiedTargetSsid.equalsIgnoreCase(dequotifiedNetworkExtraSsid)) {
+							softAp = network;
+							break;
+					}
+			}
+
+			if (softAp == null) {
+					connMan.bindProcessToNetwork(null);
+			}
+			else {
+				connMan.bindProcessToNetwork(softAp);
+			}
+	}
+
+
+	private static boolean isEmpty(final CharSequence cs) {
+			return cs == null || cs.length() == 0;
+	}
+
+	public static String removeStart(final String str, final String remove) {
+			 if (isEmpty(str) || isEmpty(remove)) {
+					 return str;
+			 }
+			 if (str.startsWith(remove)){
+					 return str.substring(remove.length());
+			 }
+			 return str;
+	 }
+
+
+	 public static String removeEnd(final String str, final String remove) {
+			 if (isEmpty(str) || isEmpty(remove)) {
+					 return str;
+			 }
+			 if (str.endsWith(remove)) {
+					 return str.substring(0, str.length() - remove.length());
+			 }
+			 return str;
+}
+
+	public static String deQuotifySsid(String SSID) {
+			if (SSID == null) {
+					return null;
+			}
+			String quoteMark = "\"";
+			SSID = removeStart(SSID, quoteMark);
+			SSID = removeEnd(SSID, quoteMark);
+			return SSID;
+	}
+
 }
