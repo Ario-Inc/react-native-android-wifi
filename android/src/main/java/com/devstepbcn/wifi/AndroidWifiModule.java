@@ -17,6 +17,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiConfiguration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Network;
 import android.net.wifi.WifiInfo;
 import android.content.Context;
 import android.os.Bundle;
@@ -34,11 +35,12 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 
 	//WifiManager Instance
 	WifiManager wifi;
-
+	ConnectivityManager connMan;
 	//Constructor
 	public AndroidWifiModule(ReactApplicationContext reactContext) {
 		super(reactContext);
 		wifi = (WifiManager)reactContext.getSystemService(Context.WIFI_SERVICE);
+		connMan = (ConnectivityManager) reactContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 
 	//Name for module register to use:
@@ -170,8 +172,8 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 
 			if(wifiConfig.SSID.equals(conf.SSID)){
 				wifi.removeNetwork(conf.networkId);
-				//conf.networkId = wifiConfig.networkId;
-				//updateNetwork = wifi.updateNetwork(conf);
+				// conf.networkId = wifiConfig.networkId;
+				// updateNetwork = wifi.updateNetwork(conf);
 			}
 		}
 
