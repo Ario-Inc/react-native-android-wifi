@@ -211,6 +211,18 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		wifi.disconnect();
 	}
 
+	@ReactMethod
+	public void findAndRemove(String ssid, Callback success) {
+		boolean remove;
+		List<WifiConfiguration> networks = wifi.getConfiguredNetworks();
+		for (WifiConfiguration network : networks) {
+			if (ssid.equals(network.SSID)) {
+				remove = wifi.removeNetwork(network.networkId);
+			}
+		}
+		success.invoke(remove);
+	}
+
 	//This method will return current ssid
 	@ReactMethod
 	public void getSSID(final Callback callback) {
