@@ -288,14 +288,16 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 			for (Network network : connMan.getAllNetworks()) {
 					Log.v("WDD","Inspecting network:  " + network);
 					NetworkInfo networkInfo = connMan.getNetworkInfo(network);
-					Log.v("WDD","Inspecting network info:  " + networkInfo);
-					String dequotifiedNetworkExtraSsid = deQuotifySsid(networkInfo.getExtraInfo());
-					String dequotifiedTargetSsid = deQuotifySsid(ssid);
-					Log.v("WDD","Network extra info: '" + dequotifiedNetworkExtraSsid + "'");
-					Log.v("WDD","And the SSID we were to connect to: '" + dequotifiedTargetSsid + "'");
-					if (dequotifiedTargetSsid.equalsIgnoreCase(dequotifiedNetworkExtraSsid)) {
-							softAp = network;
-							break;
+					if (networkInfo) {
+						Log.v("WDD","Inspecting network info:  " + networkInfo);
+						String dequotifiedNetworkExtraSsid = deQuotifySsid(networkInfo.getExtraInfo());
+						String dequotifiedTargetSsid = deQuotifySsid(ssid);
+						Log.v("WDD","Network extra info: '" + dequotifiedNetworkExtraSsid + "'");
+						Log.v("WDD","And the SSID we were to connect to: '" + dequotifiedTargetSsid + "'");
+						if (dequotifiedTargetSsid.equalsIgnoreCase(dequotifiedNetworkExtraSsid)) {
+								softAp = network;
+								break;
+						}
 					}
 			}
 
