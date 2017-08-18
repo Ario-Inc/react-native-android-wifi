@@ -124,12 +124,14 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	public void reconnect(String ssid, Callback success) {
 		boolean connect = false;
 		List<WifiConfiguration> networks = wifi.getConfiguredNetworks();
-		for (WifiConfiguration network : networks) {
-			if (ssid.equals(deQuotifySsid(network.SSID))) {
-				connect = wifi.enableNetwork(network.networkId, false);
+		if (networks != null) {
+			for (WifiConfiguration network : networks) {
+				if (ssid.equals(deQuotifySsid(network.SSID))) {
+					connect = wifi.enableNetwork(network.networkId, false);
+				}
 			}
+			success.invoke(connect);
 		}
-		success.invoke(connect);
 	}
 
 	//Use this method to check if the device is currently connected to Wifi.
@@ -168,18 +170,19 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
 		//String comparableSSID = ('"' + ssid + '"'); //Add quotes because wifiConfig.SSID has them
 		int updateNetwork = -1;
-		for(WifiConfiguration wifiConfig : mWifiConfigList){
+		if (mWifiConfigList != null) {
+			for(WifiConfiguration wifiConfig : mWifiConfigList){
 
-			if(wifiConfig.SSID.equals(conf.SSID)){
-				if (!wifi.removeNetwork(conf.networkId)) {
-					updateNetwork = wifiConfig.networkId;
-					//updateNetwork = conf.networkId;
+				if(wifiConfig.SSID.equals(conf.SSID)){
+					if (!wifi.removeNetwork(conf.networkId)) {
+						updateNetwork = wifiConfig.networkId;
+						//updateNetwork = conf.networkId;
+					}
+					// conf.networkId = wifiConfig.networkId;
+					// updateNetwork = wifi.updateNetwork(conf);
 				}
-				// conf.networkId = wifiConfig.networkId;
-				// updateNetwork = wifi.updateNetwork(conf);
 			}
 		}
-
     // If network not already in configured networks add new network
 		if ( updateNetwork == -1 ) {
     	updateNetwork = wifi.addNetwork(conf);
@@ -202,7 +205,6 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 			Log.v("WDD", "FAILING OUT - COULD NOT ENABLE NETWORK");
 			return false;
 		};
-
 		return true;
 	}
 
