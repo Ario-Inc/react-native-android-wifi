@@ -219,13 +219,16 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		boolean remove = false;
 		Log.v("WDD", "Network to remove: " + ssid);
 		List<WifiConfiguration> networks = wifi.getConfiguredNetworks();
-		for (WifiConfiguration network : networks) {
-			if (ssid.equals(deQuotifySsid(network.SSID))) {
-				Log.v("WDD", "Requesting removal of network...");
-				remove = wifi.removeNetwork(network.networkId);
-			}
-		}
-		success.invoke(remove);
+		if (networks != null) {
+      for (WifiConfiguration network : networks) {
+        if (ssid.equals(deQuotifySsid(network.SSID))) {
+          Log.v("WDD", "Requesting removal of network...");
+          remove = wifi.removeNetwork(network.networkId);
+        }
+      }
+		  success.invoke(remove);
+    }
+    success.invoke();
 	}
 
 	//This method will return current ssid
