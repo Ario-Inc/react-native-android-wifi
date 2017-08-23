@@ -228,7 +228,9 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
       }
 		  success.invoke(remove);
     }
-    success.invoke();
+    else {
+      success.invoke();
+    }
 	}
 
 	//This method will return current ssid
